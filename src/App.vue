@@ -4,29 +4,28 @@ import {onMounted, ref} from "vue";
 import {fetchLinks, getCookie} from "@/utilities";
 import CreateRental from "@/components/CreateRental.vue";
 import {useAuthStore} from "@/stores/AuthStore";
+import NavBar from "@/components/NavBar.vue";
 
-const links=ref([])
+const links = ref([])
 
 const accessToken = getCookie('access_token');
 
 
-
-const isAuthenticated=ref(false)
+const isAuthenticated = ref(false)
 
 console.log(accessToken); // true or false
-onMounted(async ()=>{
+onMounted(async () => {
 
-  try{     const authStore = useAuthStore();
-    isAuthenticated.value =await authStore.isAuth()
-console.log(isAuthenticated.value)
-  }
-  catch (e){
+  try {
+    const authStore = useAuthStore();
+    isAuthenticated.value = await authStore.isAuth()
+    console.log(isAuthenticated.value)
+  } catch (e) {
     console.error(e);
   }
 
 
-
-let fetchData = await fetchLinks()
+  let fetchData = await fetchLinks()
   links.value = await fetchData.json()
 
 
@@ -38,12 +37,13 @@ let fetchData = await fetchLinks()
 
 
     <div class="wrapper">
-{{links}}
+      <NavBar></NavBar>
     </div>
   </header>
 
   <main>
-<CreateRental v-if="isAuthenticated" ></CreateRental>
+
+    <CreateRental v-if="isAuthenticated"></CreateRental>
     <div v-else><a href="http://localhost:8000/accounts/login/">Login</a></div>
   </main>
 </template>
@@ -58,21 +58,5 @@ header {
   margin: 0 auto 2rem;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
